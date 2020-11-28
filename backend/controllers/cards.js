@@ -25,19 +25,23 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => {
-      if (!card) {
-        return res.status(404).send({ message: 'такой карточки не существует' });
-      }
-      return res.send({ data: card });
-    })
-    .catch((err) => {
-      if (err.message.match(/validation\sfailed/ig) || err.message.match(/failed\sfor\svalue/ig)) {
-        return res.status(400).send({ message: 'Переданы некорректные данные' });
-      }
-      return res.status(500).send({ message: 'Внутренняя ошибка сервиса' });
-    });
+  const userData = req.user;
+
+  if (req.params.cardId === userData._id) {
+    Card.findByIdAndRemove(req.params.cardId)
+      .then((card) => {
+        if (!card) {
+          return res.status(404).send({ message: 'такой карточки не существует' });
+        }
+        return res.send({ data: card });
+      })
+      .catch((err) => {
+        if (err.message.match(/validation\sfailed/ig) || err.message.match(/failed\sfor\svalue/ig)) {
+          return res.status(400).send({ message: 'Переданы некорректные данные' });
+        }
+        return res.status(500).send({ message: 'Внутренняя ошибка сервиса' });
+      });
+  }
 };
 
 module.exports.likeCard = (req, res) => {
