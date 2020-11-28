@@ -1,0 +1,16 @@
+.popup__close-btn {
+  padding: 0;
+  border: none;
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
+  cursor: pointer;
+  position: absolute;
+  top: -35px;
+  right: -33px;
+  transition: opacity .3s ease;
+}
+
+.popup__close-btn:hover {
+  opacity: .6;
+}

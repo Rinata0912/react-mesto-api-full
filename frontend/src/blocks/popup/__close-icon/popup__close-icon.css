@@ -1,0 +1,9 @@
+.popup__close-icon {
+  display: block;
+}
+
+@media screen and (max-width:520px) {
+  .popup__close-icon {
+    width: 26px;
+  }
+}

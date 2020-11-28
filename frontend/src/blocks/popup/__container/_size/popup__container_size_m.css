@@ -1,0 +1,18 @@
+.popup__container_size_m {
+  max-width: 430px;
+  width: 100%;
+  max-height: 330px;
+  height: 100%;
+  /* padding: 34px 36px 37px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+}
+
+@media screen and (max-width: 520px) {
+  .popup__container_size_m {
+    width: calc(100% - 90px);
+    /* padding: 22px 17px; */
+  }
+}

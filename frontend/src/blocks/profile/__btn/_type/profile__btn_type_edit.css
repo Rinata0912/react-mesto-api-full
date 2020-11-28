@@ -1,0 +1,21 @@
+.profile__btn_type_edit {
+  border: 1px solid #fff;
+  box-sizing: border-box;
+  padding: 7px;
+  transition: opacity .3s ease;
+  margin-top: 17px;
+}
+
+.profile__btn_type_edit:hover {
+  opacity: .6;
+}
+
+@media screen and (max-width: 767px) {
+  .profile__btn_type_edit {
+    padding: 5.25px;
+    margin-top: 19px;
+  }
+}
+
+
+

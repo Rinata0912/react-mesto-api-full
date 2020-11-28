@@ -1,0 +1,12 @@
+.card__img-caption {
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 15px;
+  color: #fff;
+  display: block;
+  position: absolute;
+  padding: 0;
+  margin: 0;
+  bottom: -22px;
+  left: 0;
+}

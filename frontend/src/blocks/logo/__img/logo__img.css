@@ -1,0 +1,9 @@
+.logo__img {
+  display: block;
+}
+
+@media screen and (max-width: 767px) {
+  .logo__img {
+    width: 103px;
+  }
+}

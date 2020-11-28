@@ -1,0 +1,11 @@
+.profile__avatar {
+  position: relative;
+  margin-right: 30px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.profile__avatar:hover .profile__avatar-edit{
+  opacity: 1;
+}
+
