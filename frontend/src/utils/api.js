@@ -181,7 +181,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: `${window.location.protocol}//api.mesto-community.students.nomoreparties.xyz`,
+  baseUrl: `${window.location.protocol}//api.mesto-community.students.nomoredomains.work`,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
