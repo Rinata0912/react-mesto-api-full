@@ -9,6 +9,8 @@ node_modules
 # Optional npm cache directory
 .npm
 
+.log
+
 # Optional REPL history
 .DS_Store
 .idea

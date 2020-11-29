@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const router = require('./routes/index');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const {
   login,
@@ -22,6 +23,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useCreateIndex: true,
   useFindAndModify: false,
 });
+
+app.use(requestLogger);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -43,6 +46,8 @@ app.get('/users/me', getUser);
 app.patch('/users/me/avatar', updateAvatar);
 
 app.use('/', router);
+
+app.use(errorLogger);
 
 app.use(errors());
 
