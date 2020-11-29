@@ -8,8 +8,10 @@ const router = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const allowedCors = [
-  'http://www.mesto-community.students.nomoreparties.xyz/signin',
-  'http://mesto-community.students.nomoreparties.xyz/signin',
+  'http://www.mesto-community.students.nomoreparties.xyz',
+  'http://mesto-community.students.nomoreparties.xyz',
+  'https://www.mesto-community.students.nomoreparties.xyz',
+  'https://mesto-community.students.nomoreparties.xyz',
   'http://localhost:4000',
   'http://localhost:3000',
 ];

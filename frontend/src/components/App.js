@@ -41,7 +41,7 @@ function App() {
           setCards(initCards.data);
           setCurrentUser(userInfo.data);
         })
-        .catch((res) => console.log(res));
+        .catch((err) => console.log(err));
     }
   }, [isLogin]);
 
@@ -83,7 +83,7 @@ function App() {
       .finally(() => {
         setIsInfoTooltipOpen(true);
       });
-  }, []);
+  }, [history]);
 
   const handleLogin = useCallback((userData) => {
     api
@@ -104,7 +104,7 @@ function App() {
         setIsRegister(false);
         setIsInfoTooltipOpen(true);
       });
-  }, []);
+  }, [handleSetCurrentUserEmail, history]);
 
   const handleSignOut = useCallback((path) => {
     if (path === '/') {
@@ -125,8 +125,6 @@ function App() {
           <Route path="/signup">
             <Register onRegister={handleRegister} />
           </Route>
-          // убрала проверку isTokenChecked, изначально ставила ее чтобы
-          страница не дергалась
           <ProtectedRoute path="/" isLogin={isLogin}>
             <Main
               onCardClick={handleCardClick}
@@ -219,7 +217,7 @@ function App() {
         setCurrentUser(newUserInfo);
         closeAllPopups();
       })
-      .catch((res) => console.log(res));
+      .catch((err) => console.log(err));
   }
 
   function handleUpdateAvatar({ avatar }) {
@@ -229,7 +227,7 @@ function App() {
         setCurrentUser(newAvatar);
         closeAllPopups();
       })
-      .catch((res) => console.log(res));
+      .catch((err) => console.log(err));
   }
 
   function handleCardLike(card) {
@@ -241,7 +239,7 @@ function App() {
         const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
         setCards(newCards);
       })
-      .catch((res) => console.log(res));
+      .catch((err) => console.log(err));
   }
 
   function handleCardDelete() {
@@ -252,7 +250,7 @@ function App() {
         setCards(newCards);
         closeAllPopups();
       })
-      .catch((res) => console.log(res));
+      .catch((err) => console.log(err));
   }
 
   function handleAddPlaceSubmit({ name, link }) {
@@ -262,7 +260,7 @@ function App() {
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
-      .catch((res) => console.log(res));
+      .catch((err) => console.log(err));
   }
 }
 
