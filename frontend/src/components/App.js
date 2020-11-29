@@ -4,7 +4,7 @@ import { Main } from './Main';
 import { Footer } from './Footer';
 import { ImagePopup } from './ImagePopup';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import { api, authApi } from '../utils/api';
+import { api } from '../utils/api';
 import { EditProfilePopup } from './EditProfilePopup';
 import { EditAvatarPopup } from './EditAvatarPopup';
 import { AddPlacePopup } from './AddPlacePopup';
@@ -38,8 +38,8 @@ function App() {
       Promise.all([api.getInitialCards(), api.getUserInfo()])
         .then((values) => {
           const [initCards, userInfo] = values;
-          setCards(initCards);
-          setCurrentUser(userInfo);
+          setCards(initCards.data);
+          setCurrentUser(userInfo.data);
         })
         .catch((res) => console.log(res));
     }
@@ -52,7 +52,7 @@ function App() {
   const handleTokenCheck = useCallback(() => {
     const token = localStorage.getItem('jwt');
     if (token) {
-      authApi
+      api
         .checkToken(token)
         .then((res) => {
           if (res) {
@@ -70,7 +70,7 @@ function App() {
   }, [handleTokenCheck]);
 
   const handleRegister = useCallback((userData) => {
-    authApi
+    api
       .signUp(userData)
       .then(() => {
         history.push('/signin');
@@ -86,11 +86,11 @@ function App() {
   }, []);
 
   const handleLogin = useCallback((userData) => {
-    authApi
+    api
       .signIn(userData)
       .then((res) => {
         localStorage.setItem('jwt', res.token);
-        authApi
+        api
           .checkToken(res.token)
           .then((res) => {
             setIsLogin(true);
@@ -233,7 +233,7 @@ function App() {
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    const isLiked = card.likes.some((id) => id === currentUser._id);
 
     api
       .toggleLikeCard(card._id, isLiked)

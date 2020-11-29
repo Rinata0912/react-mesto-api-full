@@ -4,8 +4,8 @@ const NeedAuthError = require('../errors/need-auth-err');
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
-  if (!authorization && !authorization.startsWith('Bearer ')) {
-    next(new NeedAuthError('Необходима авторизация'));
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    return next(new NeedAuthError('Необходима авторизация'));
   }
 
   const token = authorization.replace('Bearer ', '');

@@ -29,21 +29,24 @@ module.exports.createCard = (req, res, next) => {
 module.exports.deleteCard = (req, res, next) => {
   const userData = req.user;
 
-  if (req.params.cardId === userData._id) {
+  Card.findById(req.params.cardId).then((card) => {
+    if (!card) {
+      next(new NotFoundError('такой карточки не существует'));
+    }
+
+    if (card.owner.toString() !== userData._id) {
+      next(new IncorrectDataError('Переданы некорректные данные'));
+    }
+
     Card.findByIdAndRemove(req.params.cardId)
-      .then((card) => {
-        if (!card) {
-          next(new NotFoundError('такой карточки не существует'));
-        }
-        return res.send({ data: card });
-      })
-      .catch((err) => {
-        if (err.message.match(/validation\sfailed/ig) || err.message.match(/failed\sfor\svalue/ig)) {
-          next(new IncorrectDataError('Переданы некорректные данные'));
-        }
-        next(new Error('Внутренняя ошибка сервиса'));
-      });
-  }
+      .then((deletedCard) => res.send({ data: deletedCard }));
+  })
+    .catch((err) => {
+      if (err.message.match(/validation\sfailed/ig) || err.message.match(/failed\sfor\svalue/ig)) {
+        next(new IncorrectDataError('Переданы некорректные данные'));
+      }
+      next(new Error('Внутренняя ошибка сервиса'));
+    });
 };
 
 module.exports.likeCard = (req, res, next) => {
@@ -52,7 +55,7 @@ module.exports.likeCard = (req, res, next) => {
       if (!card) {
         next(new NotFoundError('такой карточки не существует'));
       }
-      return res.send(card.likes);
+      return res.send(card);
     })
     .catch((err) => {
       if (err.message.match(/validation\sfailed/ig) || err.message.match(/failed\sfor\svalue/ig)) {
@@ -68,7 +71,7 @@ module.exports.unlikeCard = (req, res, next) => {
       if (!card) {
         next(new NotFoundError('такой карточки не существует'));
       }
-      return res.send(card.likes);
+      return res.send(card);
     })
     .catch((err) => {
       if (err.message.match(/validation\sfailed/ig) || err.message.match(/failed\sfor\svalue/ig)) {

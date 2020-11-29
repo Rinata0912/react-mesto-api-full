@@ -3,8 +3,22 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
+const cors = require('cors');
 const router = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+
+const allowedCors = [
+  'http://www.mesto-community.students.nomoreparties.xyz/signin',
+  'http://mesto-community.students.nomoreparties.xyz/signin',
+  'http://localhost:4000',
+  'http://localhost:3000',
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    callback(null, allowedCors);
+  },
+};
 
 const {
   login,
@@ -24,10 +38,18 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useFindAndModify: false,
 });
 
+app.use(cors(corsOptions));
+
 app.use(requestLogger);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 
 app.post('/signin', login);
 app.post('/signup', celebrate({
@@ -52,7 +74,7 @@ app.use(errorLogger);
 app.use(errors());
 
 app.use((err, req, res, next) => {
-  res.send({ message: err.message });
+  res.status(err.statusCode || 500).send({ message: err.message });
 });
 
 app.listen(PORT, () => {
