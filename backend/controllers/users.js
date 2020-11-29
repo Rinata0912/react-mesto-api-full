@@ -1,26 +1,29 @@
-const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
+const NotFoundError = require('../errors/not-found-err');
+const IncorrectDataError = require('../errors/incorrect-data-err');
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.send({ data: users }))
+    .then((users) => {
+      if (!users) {
+        next(NotFoundError('Пользователи не найдены'));
+      }
+      res.send({ data: users });
+    })
     .catch((err) => {
       if (err.message.match(/validation\sfailed/gi)) {
-        return res
-          .status(400)
-          .send({ message: 'Переданы некорректные данные' });
+        next(new IncorrectDataError('Переданы некорректные данные'));
       }
-      return res.status(500).send({ message: 'Внутренняя ошибка сервиса' });
+      next(new Error('Внутренняя ошибка сервиса'));
     });
 };
 
-module.exports.getUser = (req, res) => {
+module.exports.getUser = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => {
       if (!user) {
-        return res
-          .status(404)
-          .send({ message: 'Запрашиваемый ресурс не найден' });
+        next(NotFoundError('Пользователь не найден'));
       }
       return res.send({ data: user });
     })
@@ -28,15 +31,13 @@ module.exports.getUser = (req, res) => {
       if (
         err.message.match(/validation\sfailed/gi) || err.message.match(/failed\sfor\svalue/gi)
       ) {
-        return res
-          .status(400)
-          .send({ message: 'Переданы некорректные данные' });
+        next(new IncorrectDataError('Переданы некорректные данные'));
       }
-      return res.status(500).send({ message: 'Внутренняя ошибка сервиса' });
+      next(new Error('Внутренняя ошибка сервиса'));
     });
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name,
     about,
@@ -55,15 +56,13 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.message.match(/validation\sfailed/gi)) {
-        return res
-          .status(400)
-          .send({ message: 'Переданы некорректные данные' });
+        next(new IncorrectDataError('Переданы некорректные данные'));
       }
-      return res.status(500).send({ message: 'Внутренняя ошибка сервиса' });
+      next(new Error('Внутренняя ошибка сервиса'));
     });
 };
 
-module.exports.updateProfile = (req, res) => {
+module.exports.updateProfile = (req, res, next) => {
   const { name, about, avatar } = req.body;
 
   User.findByIdAndUpdate(
@@ -74,15 +73,13 @@ module.exports.updateProfile = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.message.match(/validation\sfailed/gi)) {
-        return res
-          .status(400)
-          .send({ message: 'Переданы некорректные данные' });
+        next(new IncorrectDataError('Переданы некорректные данные'));
       }
-      return res.status(500).send({ message: 'Внутренняя ошибка сервиса' });
+      next(new Error('Внутренняя ошибка сервиса'));
     });
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.params;
 
   User.findByIdAndUpdate(
@@ -93,25 +90,27 @@ module.exports.updateAvatar = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.message.match(/validation\sfailed/gi)) {
-        return res
-          .status(400)
-          .send({ message: 'Переданы некорректные данные' });
+        next(new IncorrectDataError('Переданы некорректные данные'));
       }
-      return res.status(500).send({ message: 'Внутренняя ошибка сервиса' });
+      next(new Error('Внутренняя ошибка сервиса'));
     });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.params;
 
   User.findUserByCredentials(email, password)
     .then((user) => {
+      if (!user) {
+        next(NotFoundError('Пользователь не найден'));
+      }
       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
       res.send(token);
     })
     .catch((err) => {
-      res
-        .status(401)
-        .send({ message: err.message });
+      if (err.message.match(/validation\sfailed/gi)) {
+        next(new IncorrectDataError('Переданы некорректные данные'));
+      }
+      next(new Error('Внутренняя ошибка сервиса'));
     });
 };

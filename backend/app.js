@@ -34,6 +34,10 @@ app.patch('/users/me/avatar', updateAvatar);
 
 app.use('/', router);
 
+app.use((err, req, res, next) => {
+  res.send({ message: err.message });
+});
+
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`http://localhost:${PORT}`);
