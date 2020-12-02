@@ -24,6 +24,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
+    "lint": "eslint .",
     "deploy": "scp -r ./build/* rinata0912@84.201.181.71:/home/rinata0912/news-frontend"
   },
   "eslintConfig": {

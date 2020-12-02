@@ -10,7 +10,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const allowedCors = [
   'http://mesto-community.students.nomoredomains.work',
   'https://mesto-community.students.nomoredomains.work',
-  'http://localhost:4000',
+  'http://localhost:5000',
   'http://localhost:3000',
 ];
 
@@ -23,8 +23,6 @@ const corsOptions = {
 const {
   login,
   createUser,
-  getUser,
-  updateAvatar,
 } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 
@@ -51,21 +49,23 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.post('/signin', login);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+  }).unknown(true),
+}), login);
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).default('Жак-Ив Кусто'),
     about: Joi.string().min(2).max(30).default('Исследователь'),
     avatar: Joi.string().default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
-    email: Joi.string().required(),
+    email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }).unknown(true),
 }), createUser);
 
 app.use(auth);
-
-app.get('/users/me', getUser);
-app.patch('/users/me/avatar', updateAvatar);
 
 app.use('/', router);
 
@@ -73,7 +73,7 @@ app.use(errorLogger);
 
 app.use(errors());
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   res.status(err.statusCode || 500).send({ message: err.message });
 });
 

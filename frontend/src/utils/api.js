@@ -98,32 +98,6 @@ class Api {
       .then((res) => res);
   }
 
-  // likeCard(id) {
-  //   return fetch(`${this._options.baseUrl}/cards/likes/${id}`, {
-  //     method: 'PUT',
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //       Authorization: `Bearer ${this.getToken()}`,
-  //     },
-  //   })
-  //     .then(this._handleOriginalRes)
-  //     .then((res) => res);
-  // }
-
-  // unlikeCard(id) {
-  //   return fetch(`${this._options.baseUrl}/cards/likes/${id}`, {
-  //     method: 'DELETE',
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //       Authorization: `Bearer ${this.getToken()}`,
-  //     },
-  //   })
-  //     .then(this._handleOriginalRes)
-  //     .then((res) => res);
-  // }
-
   toggleLikeCard(id, isLiked) {
     return fetch(`${this._options.baseUrl}/cards/${id}/likes`, {
       method: isLiked ? 'DELETE' : 'PUT',
